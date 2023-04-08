@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.24)
 
 project(lesson1)
 
-add_executable(lesson1 	source/main.cpp						
+add_executable(lesson1 	source/main.cpp
+                        source/shaderClass.h
 			 )
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
