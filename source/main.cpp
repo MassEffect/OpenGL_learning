@@ -18,6 +18,16 @@ float vertices [] = {
         0.5f,  0.5f, 0.0f
         };
 
+float vertices2Triangle [] = {
+        -0.75f, 0.75f, 0.f,
+        -0.61f,  0.75f, 0.f,
+        -0.68f,  0.9f,  0.f,
+
+        0.75f, 0.75f, 0.f,
+        0.61f,  0.75f, 0.f,
+        0.68f,  0.9f,  0.f
+};
+
 unsigned int indices[] = {
         0, 1, 2,
         1, 2, 3
@@ -56,6 +66,7 @@ int main()
     }
 
     Shader shader("..\\source\\vertex.vs", "..\\source\\fragment.fs");
+    Shader shaderTriangle("..\\source\\vertex.vs", "..\\source\\fragmentYellow.fs");
 
     unsigned int EBO;
     glGenBuffers(1, &EBO);
@@ -77,6 +88,20 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    unsigned int VAOTriangle;
+    glGenVertexArrays(1, &VAOTriangle);
+    glBindVertexArray(VAOTriangle);
+
+    unsigned int VBOTriangle;
+    glGenBuffers(1, &VBOTriangle);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOTriangle);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2Triangle), vertices2Triangle, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 *  sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
         // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -95,6 +120,14 @@ int main()
         shader.use();
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
+        glBindVertexArray(0);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glBindVertexArray(VAOTriangle);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        shaderTriangle.use();
+        glDrawArrays(GL_TRIANGLES, 3, 3);
+        glBindVertexArray(0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -103,8 +136,10 @@ int main()
     }
 
     glDeleteVertexArrays(1, &VAO);
+    glDeleteVertexArrays(1, &VAOTriangle);
     glDeleteBuffers(1, &EBO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &VBOTriangle);
 
     glfwTerminate();
     return 0;
