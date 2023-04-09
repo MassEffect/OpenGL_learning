@@ -6,27 +6,29 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
+float offsetX = 0.05f;
+float offsetY = 0.05f;
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 float vertices [] = {
-       -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-       -0.5f,  0.5f, 0.0f,
-        0.5f,  0.5f, 0.0f
+       -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
+       -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
+        0.5f,  0.5f, 0.0f,  0.5f, 0.5f, 0.0f
         };
 
 float vertices2Triangle [] = {
-        -0.75f, 0.75f, 0.f,
-        -0.61f,  0.75f, 0.f,
-        -0.68f,  0.9f,  0.f,
+        -0.85f,  0.65f, 0.f,
+        -0.61f,  0.65f, 0.f,
+        -0.73f,  1.0f,  0.f,
 
-        0.75f, 0.75f, 0.f,
-        0.61f,  0.75f, 0.f,
-        0.68f,  0.9f,  0.f
-};
+        0.85f,  0.65f, 0.f,
+        0.61f,  0.65f, 0.f,
+        0.73f,  1.0f,  0.f
+        };
 
 unsigned int indices[] = {
         0, 1, 2,
@@ -66,7 +68,7 @@ int main()
     }
 
     Shader shader("..\\source\\vertex.vs", "..\\source\\fragment.fs");
-    Shader shaderTriangle("..\\source\\vertex.vs", "..\\source\\fragmentYellow.fs");
+    Shader shaderTriangle("..\\source\\vertexYellow.vs", "..\\source\\fragmentYellow.fs");
 
     unsigned int EBO;
     glGenBuffers(1, &EBO);
@@ -81,8 +83,10 @@ int main()
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 *  sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 *  sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -122,10 +126,14 @@ int main()
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
         glBindVertexArray(0);
 
+
+        shaderTriangle.use();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glBindVertexArray(VAOTriangle);
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        shaderTriangle.use();
+
+        shaderTriangle.setFloat("offsetX", offsetX);
+        shaderTriangle.setFloat("offsetY", offsetY);
         glDrawArrays(GL_TRIANGLES, 3, 3);
         glBindVertexArray(0);
 
@@ -143,13 +151,49 @@ int main()
 
     glfwTerminate();
     return 0;
-}
+};
 
 void processInput(GLFWwindow* window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-}
+
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        offsetX += 0.01;
+        if(offsetX > 0.15)
+        {
+            offsetX = 0.15;
+        };
+    };
+
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        offsetX -= 0.01;
+        if(offsetX < -1.3)
+        {
+            offsetX = -1.3;
+        };
+    };
+
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        offsetY += 0.01;
+        if(offsetY > 1.6)
+        {
+            offsetY = 1.6;
+        };
+    };
+
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        offsetY -= 0.01;
+        if(offsetY < 0)
+        {
+            offsetY = 0;
+        };
+    };
+};
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
