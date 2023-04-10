@@ -4,6 +4,7 @@ project(lesson1)
 
 add_executable(lesson1 	source/main.cpp
                         source/shaderClass.h
+                        external/stb_image/stb_image.h
 			 )
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
