@@ -164,14 +164,20 @@ int main()
         shader.setFloat("mixRatio", mixRatio);
 
         glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
         trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
         GLint transformLoc = glGetUniformLocation(shader.ID, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-        shader.use();
         glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
+
+        trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+        trans = glm::scale(trans, glm::vec3(1.0f, glm::sin(glfwGetTime()), 1.0f));
+        transformLoc = glGetUniformLocation(shader.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
         glBindVertexArray(0);
 
