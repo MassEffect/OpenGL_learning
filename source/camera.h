@@ -110,11 +110,34 @@ public:
             Position -= Right * velocity;
         if(direction == RIGHT)
             Position += Right * velocity;
+
+        Position.y = 0.0f;
     };
 
     glm::mat4 getViewMatrix()
     {
-        return glm::lookAt(Position, Position + Front, Up);
+        //return glm::lookAt(Position, Position + Front, Up);
+
+        glm::mat4 leftPartMat   = glm::mat4(1.0f);
+        glm::mat4 rightPartMat  = glm::mat4(1.0f);
+
+        rightPartMat[3][0] = -Position.x;
+        rightPartMat[3][1] = -Position.y;
+        rightPartMat[3][2] = -Position.z;
+
+        leftPartMat[0][0] = Right.x;
+        leftPartMat[1][0] = Right.y;
+        leftPartMat[2][0] = Right.z;
+
+        leftPartMat[0][1] = Up.x;
+        leftPartMat[1][1] = Up.y;
+        leftPartMat[2][1] = Up.z;
+
+        leftPartMat[0][2] = -Front.x;
+        leftPartMat[1][2] = -Front.y;
+        leftPartMat[2][2] = -Front.z;
+
+        return leftPartMat * rightPartMat;
     };
 
 
