@@ -160,7 +160,7 @@ int main()
         lightCubeShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
         lightCubeShader.setVec3("lightColor",  glm::vec3(1.0f, 1.0f, 1.0f));
         lightCubeShader.setVec3("lightPos", lightPos);
-        //lightCubeShader.setVec3("viewPos", camera.Position);
+        lightCubeShader.setVec3("viewPos", camera.Position);
 
         glm::mat4 view = glm::mat4(1.0f);
         view = camera.getViewMatrix();
