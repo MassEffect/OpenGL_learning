@@ -157,10 +157,23 @@ int main()
         lightPos = glm::vec3(cos(glfwGetTime()) * 1.3, sin(glfwGetTime()) * 1.8, sin(glfwGetTime()) * 1.3);
 
         lightCubeShader.use();
-        lightCubeShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-        lightCubeShader.setVec3("lightColor",  glm::vec3(1.0f, 1.0f, 1.0f));
-        lightCubeShader.setVec3("lightPos", lightPos);
+        lightCubeShader.setVec3("light.position", lightPos);
         lightCubeShader.setVec3("viewPos", camera.Position);
+
+        glm::vec3 lightColor;
+        lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0f));
+        lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7f));
+        lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3f));
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+        lightCubeShader.setVec3("light.ambient", ambientColor);
+        lightCubeShader.setVec3("light.diffuse", diffuseColor);
+        lightCubeShader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        lightCubeShader.setVec3("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+        lightCubeShader.setVec3("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+        lightCubeShader.setVec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+        lightCubeShader.setFloat("material.shininess", 32.0f);
 
         glm::mat4 view = glm::mat4(1.0f);
         view = camera.getViewMatrix();
