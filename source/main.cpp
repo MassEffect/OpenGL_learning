@@ -154,11 +154,13 @@ int main()
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+        lightPos = glm::vec3(cos(glfwGetTime()) * 1.3, sin(glfwGetTime()) * 1.8, sin(glfwGetTime()) * 1.3);
+
         lightCubeShader.use();
         lightCubeShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
         lightCubeShader.setVec3("lightColor",  glm::vec3(1.0f, 1.0f, 1.0f));
         lightCubeShader.setVec3("lightPos", lightPos);
-        lightCubeShader.setVec3("viewPos", camera.Position);
+        //lightCubeShader.setVec3("viewPos", camera.Position);
 
         glm::mat4 view = glm::mat4(1.0f);
         view = camera.getViewMatrix();
@@ -169,7 +171,7 @@ int main()
         lightCubeShader.setMat4("projection", projection);
 
         glm::mat4 model = glm::mat4(1.0f);
-        //model = glm::translate(model, cubePositions[0]);
+        model = glm::rotate(model, (float)45.0, glm::vec3(0.0f, 1.0f, 0.3f));
         lightCubeShader.setMat4("model", model);
 
         glBindVertexArray(cubeVAO);
